@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Dulu</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0c0e11;
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #btn-yes {
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: transform 0.1s;
+        }
+
+        #btn-yes:active {
+            transform: scale(0.95);
+        }
+
+        #btn-no {
+            background-color: #f44336;
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+            /* Animasi biar gesernya mulus kayak ngeles */
+            transition: all 0.2s ease; 
+        }
+
+        /* Container Jumpscare */
+        #jumpscare-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background-color: black;
+        }
+
+        #jumpscare-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-content">
+        <h1>Apakah kamu bernama Pipit?</h1>
+        
+        <div class="btn-group">
+            <button id="btn-yes">Iya</button>
+            <button id="btn-no">Bukan</button>
+        </div>
+    </div>
+
+    <!-- Layar Jumpscare -->
+    <div id="jumpscare-container">
+        <!-- Pastikan punya file jumpscare.mp4 di folder yang sama -->
+        <video id="jumpscare-video" src="jumpscare.mp4" playsinline></video>
+    </div>
+
+    <script>
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+        const jumpscareContainer = document.getElementById('jumpscare-container');
+        const jumpscareVideo = document.getElementById('jumpscare-video');
+
+        // Fungsi buat bikin tombol "Bukan" kabur
+        function lariWoi() {
+            // Ubah posisi jadi fixed biar bebas gerak di seluruh layar
+            btnNo.style.position = 'fixed';
+            
+            // Ukuran layar dikurangi ukuran tombol biar gak bablas ke luar layar
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+            
+            // Bikin posisi acak
+            const randomX = Math.floor(Math.random() * maxX) + 10;
+            const randomY = Math.floor(Math.random() * maxY) + 10;
+            
+            // Terapin posisi baru (otomatis ada efek geser karena transition di CSS)
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+        }
+
+        // Trigger lari pas cursor ngedeket (di PC)
+        btnNo.addEventListener('mouseenter', lariWoi);
+        
+        // Trigger lari pas jari mau nyentuh / nge-klik (di HP)
+        btnNo.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Biar gak ke-klik beneran
+            lariWoi();
+        });
+        
+        // Jaga-jaga kalau dia tetep berhasil klik
+        btnNo.addEventListener('click', function(e) {
+            e.preventDefault();
+            lariWoi();
+        });
+
+        // Kalo dipencet "Iya", JUMPSCARE MUNCUL!
+        btnYes.addEventListener('click', function() {
+            // Munculin layar hitam
+            jumpscareContainer.style.display = 'block';
+            
+            // Play video jumpscare
+            jumpscareVideo.play();
+            
+            // Pindah ke web ultah setelah 1 detik (1000ms)
+            // Kalo durasi videonya lebih dari 1 detik, ubah aja angka 1000 ini, misal 2000 (2 detik)
+            setTimeout(function() {
+                window.location.href = 'ultah.html';
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
